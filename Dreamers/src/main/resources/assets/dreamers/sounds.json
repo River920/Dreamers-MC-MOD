@@ -1,0 +1,10 @@
+{
+  "join_sound": {
+    "sounds": [
+      {
+        "name": "dreamers:join_sound",
+        "stream": false
+      }
+    ]
+  }
+}
