@@ -6,5 +6,13 @@
         "stream": false
       }
     ]
+  },
+  "dreamy": {
+    "sounds": [
+      {
+        "name": "dreamers:dreamy",
+        "stream": false
+      }
+    ]
   }
 }

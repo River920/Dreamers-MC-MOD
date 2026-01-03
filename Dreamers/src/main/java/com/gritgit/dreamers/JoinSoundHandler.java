@@ -22,8 +22,11 @@ public class JoinSoundHandler {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(
             ForgeRegistries.SOUND_EVENTS, Dreamers.MODID);
 
+    // two sounds: join_sound and dreamy
     public static final RegistryObject<SoundEvent> JOIN_SOUND = SOUNDS.register("join_sound",
             () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Dreamers.MODID, "join_sound")));
+    public static final RegistryObject<SoundEvent> DREAMY_SOUND = SOUNDS.register("dreamy",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Dreamers.MODID, "dreamy")));
 
     public static void register() {
         // Empty method needed so EventBusSubscriber picks up this class
@@ -33,13 +36,14 @@ public class JoinSoundHandler {
     private static long nextPlayTimeMs = -1L;
     private static final Random RANDOM = new Random();
 
-    // when player logs in, schedule the first play 20-30 seconds later
+    // when player logs in, schedule the first play (10-30 minutes randomly)
     @SubscribeEvent
     public static void onPlayerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
         scheduleNextPlay();
     }
 
-    // client tick handler: when time reaches nextPlayTimeMs, play sound and reschedule 20-30s later
+    // client tick handler: when time reaches nextPlayTimeMs, pick one sound 50/50 and play it,
+    // then reschedule for another random 10-30 minutes
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         // only act on END phase to reduce checks; ensures Minecraft instance is fully ticked
@@ -48,20 +52,23 @@ public class JoinSoundHandler {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null) return;
 
-        // if no player or not in-world, do nothing
+        // if no player or not in-world, do nothing (keep schedule, will trigger when player returns)
         if (mc.player == null) return;
 
         long now = System.currentTimeMillis();
         if (nextPlayTimeMs > 0 && now >= nextPlayTimeMs) {
-            // play the join sound as UI sound
-            mc.getSoundManager().play(SimpleSoundInstance.forUI(JOIN_SOUND.get(), 1.0F));
-            // schedule the next play
+            // 50/50 chance between join_sound and dreamy
+            SoundEvent toPlay = RANDOM.nextBoolean() ? JOIN_SOUND.get() : DREAMY_SOUND.get();
+            mc.getSoundManager().play(SimpleSoundInstance.forUI(toPlay, 1.0F));
+            // schedule the next play (10-30 minutes)
             scheduleNextPlay();
         }
     }
 
     private static void scheduleNextPlay() {
-        int delaySeconds = 600 + RANDOM.nextInt(1201);
+        // choose a delay between 10 and 30 minutes (600..1800 seconds)
+        // RANDOM.nextInt(1201) -> 0..1200, so 600 + that -> 600..1800
+        int delaySeconds = 600 + RANDOM.nextInt(1201); // seconds
         nextPlayTimeMs = System.currentTimeMillis() + (delaySeconds * 1000L);
     }
 }
