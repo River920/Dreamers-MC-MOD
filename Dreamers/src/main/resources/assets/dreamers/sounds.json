@@ -1,18 +1,5 @@
 {
-  "join_sound": {
-    "sounds": [
-      {
-        "name": "dreamers:join_sound",
-        "stream": false
-      }
-    ]
-  },
-  "dreamy": {
-    "sounds": [
-      {
-        "name": "dreamers:dreamy",
-        "stream": false
-      }
-    ]
-  }
+  "join_sound": { "sounds": [ { "name": "dreamers:join_sound", "stream": false } ] },
+  "dreamy": { "sounds": [ { "name": "dreamers:dreamy", "stream": false } ] },
+  "snap": { "sounds": [ { "name": "dreamers:snap", "stream": false } ] }
 }

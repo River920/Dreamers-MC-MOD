@@ -12,5 +12,7 @@ public class Dreamers {
         JoinSoundHandler.SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
         // Register events (player login)
         JoinSoundHandler.register();
+        // Register entities
+        ModEntities.ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }
